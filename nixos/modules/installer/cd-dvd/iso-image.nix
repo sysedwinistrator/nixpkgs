@@ -272,7 +272,7 @@ let
     cat <<EOF > $out/EFI/boot/grub.cfg
 
     set with_fonts=false
-    set textmode=false
+    set textmode=true
     # If you want to use serial for "terminal_*" commands, you need to set one up:
     #   Example manual configuration:
     #    → serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1
