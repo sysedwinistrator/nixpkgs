@@ -19,6 +19,27 @@ in
 {
   ###### interface
   options.services.kubernetes.addonManager = with lib.types; {
+    user = mkOption {
+      description = ''
+        User under which addon-manager runs. Should be root when using bootstrapAddons.
+      '';
+      default = "kubernetes";
+      type = str;
+      example = literalExpression ''
+        "root"
+      '';
+    };
+
+    group = mkOption {
+      description = ''
+        Group under which addon-manager runs.
+      '';
+      default = "kubernetes";
+      type = str;
+      example = literalExpression ''
+        "root"
+      '';
+    };
 
     bootstrapAddons = mkOption {
       description = lib.mdDoc ''
@@ -79,8 +100,8 @@ in
         Slice = "kubernetes.slice";
         ExecStart = "${top.package}/bin/kube-addons";
         WorkingDirectory = top.dataDir;
-        User = "kubernetes";
-        Group = "kubernetes";
+        User = cfg.user;
+        Group = cfg.group;
         Restart = "on-failure";
         RestartSec = 10;
       };
@@ -163,6 +184,7 @@ in
         name = "kube-addon-manager";
         CN = "system:kube-addon-manager";
         action = "systemctl restart kube-addon-manager.service";
+        privateKeyOwner = cfg.user;
       };
     };
   };
