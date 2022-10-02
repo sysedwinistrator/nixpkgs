@@ -295,6 +295,7 @@ in
           '') cfg.seedDockerImages}
 
           rm /opt/cni/bin/* || true
+          mkdir -p ${cfg.cni.configDir} || true
           ${concatMapStrings (package: ''
             echo "Linking cni package: ${package}"
             ln -fs ${package}/bin/* /opt/cni/bin
@@ -306,7 +307,6 @@ in
           MemoryAccounting = true;
           Restart = "on-failure";
           RestartSec = "1000ms";
-          ExecStartPre = lib.mkIf (!cfg.cni.manageConfigDir) ''mkdir -p ${cfg.cni.configDir}'';
           ExecStart = ''${top.package}/bin/kubelet \
             --address=${cfg.address} \
             --authentication-token-webhook \
