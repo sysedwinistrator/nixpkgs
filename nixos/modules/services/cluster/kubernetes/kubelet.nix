@@ -101,13 +101,6 @@ in
         default = [];
       };
 
-      configDirMode = mkOption {
-        description = "By default, the CNI config dir is symlinked from the nix store and read-only. Set an octal mode to instead create a copy.";
-        type = str;
-        default = "symlink";
-        example = "0644";
-      };
-
       config = mkOption {
         description = lib.mdDoc "Kubernetes CNI configuration.";
         type = listOf attrs;
@@ -259,10 +252,7 @@ in
   config = mkMerge [
     (mkIf cfg.enable {
 
-      environment.etc."cni/net.d" = {
-        source = cniConfig;
-        mode = cfg.cni.configDirMode;
-      };
+      environment.etc."cni/net.d".source = cniConfig;
 
       services.kubernetes.kubelet.seedDockerImages = [infraContainer];
 
