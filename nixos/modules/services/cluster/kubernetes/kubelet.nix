@@ -101,6 +101,12 @@ in
         default = [];
       };
 
+      manageConfigDir = mkOption {
+        description = "Manage the provided configDir in store, making it read-only.";
+        type = bool;
+        default = true;
+      };
+
       config = mkOption {
         description = lib.mdDoc "Kubernetes CNI configuration.";
         type = listOf attrs;
@@ -252,7 +258,7 @@ in
   config = mkMerge [
     (mkIf cfg.enable {
 
-      environment.etc."cni/net.d".source = cniConfig;
+      environment.etc."cni/net.d".source = lib.mkIf cfg.cni.manageConfigDir cniConfig;
 
       services.kubernetes.kubelet.seedDockerImages = [infraContainer];
 
@@ -298,6 +304,7 @@ in
           MemoryAccounting = true;
           Restart = "on-failure";
           RestartSec = "1000ms";
+          ExecStartPre = lib.mkIf (!cfg.cni.manageConfigDir) "mkdir -p ${cfg.cni.configDir}";
           ExecStart = ''${top.package}/bin/kubelet \
             --address=${cfg.address} \
             --authentication-token-webhook \
@@ -309,6 +316,10 @@ in
               "--cluster-dns=${cfg.clusterDns}"} \
             ${optionalString (cfg.clusterDomain != "")
               "--cluster-domain=${cfg.clusterDomain}"} \
+            ${optionalString (cfg.cni.manageConfigDir)
+            "--cni-conf-dir=${cniConfig}"}\
+            ${optionalString (!cfg.cni.manageConfigDir)
+            "--cni-conf-dir=${cfg.cni.configDir}"}\
             ${optionalString (cfg.featureGates != [])
               "--feature-gates=${concatMapStringsSep "," (feature: "${feature}=true") cfg.featureGates}"} \
             --hairpin-mode=hairpin-veth \
