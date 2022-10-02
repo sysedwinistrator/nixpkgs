@@ -258,7 +258,9 @@ in
   config = mkMerge [
     (mkIf cfg.enable {
 
-      environment.etc."cni/net.d".source = lib.mkIf cfg.cni.manageConfigDir cniConfig;
+      environment.etc."cni/net.d" = lib.mkIf cfg.cni.manageConfigDir {
+        source = cniConfig;
+      };
 
       services.kubernetes.kubelet.seedDockerImages = [infraContainer];
 
