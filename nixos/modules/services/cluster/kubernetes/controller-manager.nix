@@ -28,6 +28,13 @@ in
       type = str;
     };
 
+    serviceClusterIpRange = mkOption {
+      description = "Kubernetes CIDR Range for Services in cluster.";
+      default = top.apiserver.serviceClusterIpRange;
+      defaultText = literalExpression "config.${otop.apiserver.serviceClusterIpRange}";
+      type = str;
+    };
+
     clusterCidr = mkOption {
       description = lib.mdDoc "Kubernetes CIDR Range for Pods in cluster.";
       default = top.clusterCidr;
@@ -121,6 +128,8 @@ in
           --bind-address=${cfg.bindAddress} \
           ${optionalString (cfg.clusterCidr!=null)
             "--cluster-cidr=${cfg.clusterCidr}"} \
+          ${optionalString (cfg.allocateNodeCIDRs)
+            "--service-cluster-ip-range=${cfg.serviceClusterIpRange}"} \
           ${optionalString (cfg.featureGates != [])
             "--feature-gates=${concatMapStringsSep "," (feature: "${feature}=true") cfg.featureGates}"} \
           --kubeconfig=${top.lib.mkKubeConfig "kube-controller-manager" cfg.kubeconfig} \
