@@ -4,219 +4,264 @@ with lib;
 
 let
   cfg = config.services.cfssl;
-in {
+  migratedOptions = [
+    "enable"
+    "dataDir"
+    "address"
+    "port"
+    "ca"
+    "caKey"
+    "caBundle"
+    "intBundle"
+    "intDir"
+    "metadata"
+    "remote"
+    "configFile"
+    "responder"
+    "responderKey"
+    "tlsKey"
+    "tlsCert"
+    "mutualTlsCa"
+    "mutualTlsCn"
+    "tlsRemoteCa"
+    "mutualTlsClientCert"
+    "mutualTlsClientKey"
+    "dbConfig"
+    "logLevel"
+  ];
+in
+{
+  imports = [
+    (builtins.map (option: (mkRenamedOptionModule [ "services" "cfssl" option ] [ "services" "cfssl" "instances" "migrated" option ])) migratedOptions)
+  ];
   options.services.cfssl = {
-    enable = mkEnableOption (lib.mdDoc "the CFSSL CA api-server");
 
-    dataDir = mkOption {
-      default = "/var/lib/cfssl";
-      type = types.path;
-      description = lib.mdDoc ''
-        The work directory for CFSSL.
+    instances = mkOption {
+      default = { };
+      type = types.attrsOf types.submodule {
+        options = {
 
-        ::: {.note}
-        If left as the default value this directory will automatically be
-        created before the CFSSL server starts, otherwise you are
-        responsible for ensuring the directory exists with appropriate
-        ownership and permissions.
-        :::
-      '';
-    };
+          enable = mkEnableOption (lib.mdDoc "the CFSSL CA api-server");
 
-    address = mkOption {
-      default = "127.0.0.1";
-      type = types.str;
-      description = lib.mdDoc "Address to bind.";
-    };
+          dataDir = mkOption {
+            default = "/var/lib/cfssl";
+            type = types.path;
+            description = lib.mdDoc ''
+              The work directory for CFSSL.
 
-    port = mkOption {
-      default = 8888;
-      type = types.port;
-      description = lib.mdDoc "Port to bind.";
-    };
+              ::: {.note}
+              If left as the default value this directory will automatically be
+              created before the CFSSL server starts, otherwise you are
+              responsible for ensuring the directory exists with appropriate
+              ownership and permissions.
+              :::
+            '';
+          };
 
-    ca = mkOption {
-      defaultText = literalExpression ''"''${cfg.dataDir}/ca.pem"'';
-      type = types.str;
-      description = lib.mdDoc "CA used to sign the new certificate -- accepts '[file:]fname' or 'env:varname'.";
-    };
+          address = mkOption {
+            default = "127.0.0.1";
+            type = types.str;
+            description = lib.mdDoc "Address to bind.";
+          };
 
-    caKey = mkOption {
-      defaultText = literalExpression ''"file:''${cfg.dataDir}/ca-key.pem"'';
-      type = types.str;
-      description = lib.mdDoc "CA private key -- accepts '[file:]fname' or 'env:varname'.";
-    };
+          port = mkOption {
+            default = 8888;
+            type = types.port;
+            description = lib.mdDoc "Port to bind.";
+          };
 
-    caBundle = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Path to root certificate store.";
-    };
+          ca = mkOption {
+            defaultText = literalExpression ''"''${cfg.dataDir}/ca.pem"'';
+            type = types.str;
+            description = lib.mdDoc "CA used to sign the new certificate -- accepts '[file:]fname' or 'env:varname'.";
+          };
 
-    intBundle = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Path to intermediate certificate store.";
-    };
+          caKey = mkOption {
+            defaultText = literalExpression ''"file:''${cfg.dataDir}/ca-key.pem"'';
+            type = types.str;
+            description = lib.mdDoc "CA private key -- accepts '[file:]fname' or 'env:varname'.";
+          };
 
-    intDir = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Intermediates directory.";
-    };
+          caBundle = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Path to root certificate store.";
+          };
 
-    metadata = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc ''
-        Metadata file for root certificate presence.
-        The content of the file is a json dictionary (k,v): each key k is
-        a SHA-1 digest of a root certificate while value v is a list of key
-        store filenames.
-      '';
-    };
+          intBundle = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Path to intermediate certificate store.";
+          };
 
-    remote = mkOption {
-      default = null;
-      type = types.nullOr types.str;
-      description = lib.mdDoc "Remote CFSSL server.";
-    };
+          intDir = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Intermediates directory.";
+          };
 
-    configFile = mkOption {
-      default = null;
-      type = types.nullOr types.str;
-      description = lib.mdDoc "Path to configuration file. Do not put this in nix-store as it might contain secrets.";
-    };
+          metadata = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc ''
+              Metadata file for root certificate presence.
+              The content of the file is a json dictionary (k,v): each key k is
+              a SHA-1 digest of a root certificate while value v is a list of key
+              store filenames.
+            '';
+          };
 
-    responder = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Certificate for OCSP responder.";
-    };
+          remote = mkOption {
+            default = null;
+            type = types.nullOr types.str;
+            description = lib.mdDoc "Remote CFSSL server.";
+          };
 
-    responderKey = mkOption {
-      default = null;
-      type = types.nullOr types.str;
-      description = lib.mdDoc "Private key for OCSP responder certificate. Do not put this in nix-store.";
-    };
+          configFile = mkOption {
+            default = null;
+            type = types.nullOr types.str;
+            description = lib.mdDoc "Path to configuration file. Do not put this in nix-store as it might contain secrets.";
+          };
 
-    tlsKey = mkOption {
-      default = null;
-      type = types.nullOr types.str;
-      description = lib.mdDoc "Other endpoint's CA private key. Do not put this in nix-store.";
-    };
+          responder = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Certificate for OCSP responder.";
+          };
 
-    tlsCert = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Other endpoint's CA to set up TLS protocol.";
-    };
+          responderKey = mkOption {
+            default = null;
+            type = types.nullOr types.str;
+            description = lib.mdDoc "Private key for OCSP responder certificate. Do not put this in nix-store.";
+          };
 
-    mutualTlsCa = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Mutual TLS - require clients be signed by this CA.";
-    };
+          tlsKey = mkOption {
+            default = null;
+            type = types.nullOr types.str;
+            description = lib.mdDoc "Other endpoint's CA private key. Do not put this in nix-store.";
+          };
 
-    mutualTlsCn = mkOption {
-      default = null;
-      type = types.nullOr types.str;
-      description = lib.mdDoc "Mutual TLS - regex for whitelist of allowed client CNs.";
-    };
+          tlsCert = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Other endpoint's CA to set up TLS protocol.";
+          };
 
-    tlsRemoteCa = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "CAs to trust for remote TLS requests.";
-    };
+          mutualTlsCa = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Mutual TLS - require clients be signed by this CA.";
+          };
 
-    mutualTlsClientCert = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Mutual TLS - client certificate to call remote instance requiring client certs.";
-    };
+          mutualTlsCn = mkOption {
+            default = null;
+            type = types.nullOr types.str;
+            description = lib.mdDoc "Mutual TLS - regex for whitelist of allowed client CNs.";
+          };
 
-    mutualTlsClientKey = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Mutual TLS - client key to call remote instance requiring client certs. Do not put this in nix-store.";
-    };
+          tlsRemoteCa = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "CAs to trust for remote TLS requests.";
+          };
 
-    dbConfig = mkOption {
-      default = null;
-      type = types.nullOr types.path;
-      description = lib.mdDoc "Certificate db configuration file. Path must be writeable.";
-    };
+          mutualTlsClientCert = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Mutual TLS - client certificate to call remote instance requiring client certs.";
+          };
 
-    logLevel = mkOption {
-      default = 1;
-      type = types.enum [ 0 1 2 3 4 5 ];
-      description = lib.mdDoc "Log level (0 = DEBUG, 5 = FATAL).";
+          mutualTlsClientKey = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Mutual TLS - client key to call remote instance requiring client certs. Do not put this in nix-store.";
+          };
+
+          dbConfig = mkOption {
+            default = null;
+            type = types.nullOr types.path;
+            description = lib.mdDoc "Certificate db configuration file. Path must be writeable.";
+          };
+
+          logLevel = mkOption {
+            default = 1;
+            type = types.enum [ 0 1 2 3 4 5 ];
+            description = lib.mdDoc "Log level (0 = DEBUG, 5 = FATAL).";
+          };
+        };
+      };
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf (builtins.any (x: x) (attrsets.mapAttrsToList (name: value: value.enable) cfg.instances)) {
     users.groups.cfssl = {
       gid = config.ids.gids.cfssl;
     };
 
     users.users.cfssl = {
       description = "cfssl user";
-      home = cfg.dataDir;
       group = "cfssl";
       uid = config.ids.uids.cfssl;
     };
 
-    systemd.services.cfssl = {
-      description = "CFSSL CA API server";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+    systemd.services = builtins.mapAttrs
+      (instanceName: instance: {
+        "cfssl-${instanceName}" = {
+          description = "CFSSL CA API server for ${instanceName}";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
 
-      serviceConfig = lib.mkMerge [
-        {
-          WorkingDirectory = cfg.dataDir;
-          Restart = "always";
-          User = "cfssl";
-          Group = "cfssl";
+          serviceConfig = lib.mkMerge [
+            {
+              WorkingDirectory = instance.dataDir;
+              Restart = "always";
+              User = "cfssl";
+              Group = "cfssl";
 
-          ExecStart = with cfg; let
-            opt = n: v: optionalString (v != null) ''-${n}="${v}"'';
-          in
-            lib.concatStringsSep " \\\n" [
-              "${pkgs.cfssl}/bin/cfssl serve"
-              (opt "address" address)
-              (opt "port" (toString port))
-              (opt "ca" ca)
-              (opt "ca-key" caKey)
-              (opt "ca-bundle" caBundle)
-              (opt "int-bundle" intBundle)
-              (opt "int-dir" intDir)
-              (opt "metadata" metadata)
-              (opt "remote" remote)
-              (opt "config" configFile)
-              (opt "responder" responder)
-              (opt "responder-key" responderKey)
-              (opt "tls-key" tlsKey)
-              (opt "tls-cert" tlsCert)
-              (opt "mutual-tls-ca" mutualTlsCa)
-              (opt "mutual-tls-cn" mutualTlsCn)
-              (opt "mutual-tls-client-key" mutualTlsClientKey)
-              (opt "mutual-tls-client-cert" mutualTlsClientCert)
-              (opt "tls-remote-ca" tlsRemoteCa)
-              (opt "db-config" dbConfig)
-              (opt "loglevel" (toString logLevel))
-            ];
-        }
-        (mkIf (cfg.dataDir == options.services.cfssl.dataDir.default) {
-          StateDirectory = baseNameOf cfg.dataDir;
-          StateDirectoryMode = 700;
-        })
-      ];
-    };
+              ExecStart = with instance; let
+                opt = n: v: optionalString (v != null) ''-${n}="${v}"'';
+              in
+              lib.concatStringsSep " \\\n" [
+                "${pkgs.cfssl}/bin/cfssl serve"
+                (opt "address" address)
+                (opt "port" (toString port))
+                (opt "ca" ca)
+                (opt "ca-key" caKey)
+                (opt "ca-bundle" caBundle)
+                (opt "int-bundle" intBundle)
+                (opt "int-dir" intDir)
+                (opt "metadata" metadata)
+                (opt "remote" remote)
+                (opt "config" configFile)
+                (opt "responder" responder)
+                (opt "responder-key" responderKey)
+                (opt "tls-key" tlsKey)
+                (opt "tls-cert" tlsCert)
+                (opt "mutual-tls-ca" mutualTlsCa)
+                (opt "mutual-tls-cn" mutualTlsCn)
+                (opt "mutual-tls-client-key" mutualTlsClientKey)
+                (opt "mutual-tls-client-cert" mutualTlsClientCert)
+                (opt "tls-remote-ca" tlsRemoteCa)
+                (opt "db-config" dbConfig)
+                (opt "loglevel" (toString logLevel))
+              ];
+            }
+            (mkIf (instance.dataDir == instance.dataDir.default) {
+              StateDirectory = baseNameOf instance.dataDir;
+              StateDirectoryMode = 700;
+            })
+          ];
+        };
+      })
+      cfg.instances;
 
-    services.cfssl = {
-      ca = mkDefault "${cfg.dataDir}/ca.pem";
-      caKey = mkDefault "${cfg.dataDir}/ca-key.pem";
-    };
+    services.cfssl.instances = builtins.mapAttrs
+      (instanceName: instance: {
+        "${instanceName}" = {
+          ca = mkDefault "${cfg.dataDir}/ca.pem";
+          caKey = mkDefault "${cfg.dataDir}/ca-key.pem";
+        };
+      })
+      cfg.instances;
   };
 }
