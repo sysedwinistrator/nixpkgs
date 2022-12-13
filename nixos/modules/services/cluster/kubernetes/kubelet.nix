@@ -319,9 +319,9 @@ in
             ${optionalString (cfg.clusterDomain != "")
               "--cluster-domain=${cfg.clusterDomain}"} \
             ${optionalString (cfg.cni.manageConfigDir)
-            "--cni-conf-dir=${cniConfig}"}\
+            "--cni-conf-dir=${cniConfig}"} \
             ${optionalString (!cfg.cni.manageConfigDir)
-            "--cni-conf-dir=${cfg.cni.configDir}"}\
+            "--cni-conf-dir=${cfg.cni.configDir}"} \
             ${optionalString (cfg.featureGates != [])
               "--feature-gates=${concatMapStringsSep "," (feature: "${feature}=true") cfg.featureGates}"} \
             --hairpin-mode=hairpin-veth \
