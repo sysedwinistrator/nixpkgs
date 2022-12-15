@@ -313,10 +313,6 @@ in
               "--cluster-dns=${cfg.clusterDns}"} \
             ${optionalString (cfg.clusterDomain != "")
               "--cluster-domain=${cfg.clusterDomain}"} \
-            ${optionalString (cfg.cni.manageConfigDir)
-            "--cni-conf-dir=${cniConfig}"} \
-            ${optionalString (!cfg.cni.manageConfigDir)
-            "--cni-conf-dir=${cfg.cni.configDir}"} \
             ${optionalString (cfg.featureGates != [])
               "--feature-gates=${concatMapStringsSep "," (feature: "${feature}=true") cfg.featureGates}"} \
             --hairpin-mode=hairpin-veth \
@@ -391,6 +387,12 @@ in
       services.kubernetes.kubelet.taints.unschedulable = {
         value = "true";
         effect = "NoSchedule";
+      };
+    })
+
+    (mkIf (!cfg.cni.manageConfigDir) {
+      virtualisation.containerd.settings.plugins."io.containerd.grpc.v1.cri".cni = {
+        conf_dir = cfg.cni.configDir;
       };
     })
 
