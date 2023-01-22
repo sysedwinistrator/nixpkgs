@@ -2,27 +2,19 @@
 
 stdenv.mkDerivation rec {
   pname = "raft-canonical";
-  version = "0.11.2";
+  version = "0.17.1";
 
   src = fetchFromGitHub {
     owner = "canonical";
     repo = "raft";
     rev = "v${version}";
-    sha256 = "050dwy34jh8dihfwfm0r1by2i3sy9crapipp9idw32idm79y4izb";
+    sha256 = "sha256-P6IYl6xcsqXw1ilt6HYw757FL2syy1XePBVGbPAlz6Q=";
   };
 
   nativeBuildInputs = [ autoreconfHook file pkg-config ];
   buildInputs = [ libuv lz4 ];
 
   enableParallelBuilding = true;
-
-  # Ignore broken test, likely not causing huge breakage
-  # (https://github.com/canonical/raft/issues/292)
-  postPatch = ''
-    substituteInPlace test/integration/test_uv_tcp_connect.c --replace \
-      "TEST(tcp_connect, closeDuringHandshake, setUp, tearDownDeps, 0, NULL)" \
-      "TEST(tcp_connect, closeDuringHandshake, setUp, tearDownDeps, MUNIT_TEST_OPTION_TODO, NULL)"
-  '';
 
   preConfigure = ''
     substituteInPlace configure --replace /usr/bin/ " "
