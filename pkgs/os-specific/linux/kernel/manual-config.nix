@@ -129,7 +129,6 @@ stdenv.mkDerivation ({
     # which does not have $dev.
     if [ -n "$dev" ]; then
         mkdir -p $dev/lib/modules/${modDirVersion}
-        cd $dev/lib/modules/${modDirVersion}
     fi
   '';
 
