@@ -150,6 +150,23 @@ in {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
 
+  pypy310 = callPackage ./pypy {
+    self = __splicedPackages.pypy310;
+    sourceVersion = {
+      major = "7";
+      minor = "3";
+      patch = "12";
+    };
+
+    hash = "sha256-huTk6sw2BGxhgvQwGHllN/4zpg4dKizGuOf5Gl3LPkI=";
+    pythonVersion = "3.10";
+    db = db.override { dbmSupport = !stdenv.isDarwin; };
+    python = __splicedPackages.pypy27;
+    inherit passthruFun;
+    inherit (darwin) libunwind;
+    inherit (darwin.apple_sdk.frameworks) Security;
+  };
+
   pypy39 = callPackage ./pypy {
     self = __splicedPackages.pypy39;
     sourceVersion = {
