@@ -4,6 +4,7 @@
 , fetchFromGitHub
 , SystemConfiguration
 , python3
+, self
 , fetchpatch
 }:
 
