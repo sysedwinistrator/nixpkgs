@@ -11,9 +11,11 @@
 , libXrandr
 , libXxf86vm
 , lz4
+, mpv
 , pkg-config
-, SDL
-, SDL_mixer
+, pulseaudio
+, SDL2
+, SDL2_mixer
 , stdenv
 , zlib
 , freeimage
@@ -26,13 +28,9 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "Almamu";
     repo = pname;
-    rev = "cb6f05ff2774a832b6fcba6678d8765995f0af3e";
-    sha256 = "sha256-f9szX+eLOII5zUCdTQjWcS38WNMCysJErrexxXARJdQ=";
+    rev = "cdf571f6a47b783b61fe5b50537b0c85774237f8";
+    hash = "sha256-LbIqkG4x99GgzhvPEO7UugKpgmBrQwhT1BxaxkRztXo=";
   };
-
-  patches = [
-    ./sdl-path.patch
-  ];
 
   nativeBuildInputs = [ cmake pkg-config ];
   buildInputs = [
@@ -47,8 +45,10 @@ stdenv.mkDerivation rec {
     libXrandr
     libXxf86vm
     lz4
-    SDL
-    SDL_mixer.all
+    mpv
+    pulseaudio
+    SDL2
+    SDL2_mixer.all
     zlib
   ];
 
