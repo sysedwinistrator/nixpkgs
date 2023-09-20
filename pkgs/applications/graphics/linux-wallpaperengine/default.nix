@@ -66,5 +66,6 @@ stdenv.mkDerivation rec {
     description = "Wallpaper engine compatible with linux";
     license = licenses.gpl3;
     platforms = platforms.linux;
+    mainProgram = "linux-wallpaperengine";
   };
 }
