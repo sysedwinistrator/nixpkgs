@@ -2582,6 +2582,10 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) Security;
   };
 
+  socket_vmnet = callPackage ../os-specific/darwin/socket_vmnet {
+    inherit (darwin.apple_sdk.frameworks) vmnet;
+  };
+
   steampipePackages = recurseIntoAttrs (
     callPackage ../tools/misc/steampipe-packages { }
   );
