@@ -1,6 +1,6 @@
 { lib
 , buildPythonPackage
-, fetchPypi
+, fetchzip
 , pkg-config
 , lndir
 , sip
@@ -13,15 +13,15 @@
 
 buildPythonPackage rec {
   pname = "pyqt6-webengine";
-  version = "6.6.0";
+  version = "6.7.0.dev2403171553";
   format = "pyproject";
 
   disabled = pythonOlder "3.6";
 
-  src = fetchPypi {
+  src = fetchzip {
     pname = "PyQt6_WebEngine";
-    inherit version;
-    hash = "sha256-1QuYTD+F5AnmkrFWEychUi1OjPm2wl4M+Sfuot+zlIc=";
+    url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6-WebEngine/PyQt6_WebEngine-${version}.tar.gz";
+    hash = "sha256-qydNkzEmJbsF1acMEsknmdi63DZz0x0p+4x8OnErRs0=";
   };
 
   # fix include path and increase verbosity
