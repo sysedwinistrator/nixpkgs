@@ -23,7 +23,7 @@
 
 buildPythonPackage rec {
   pname = "pyqt6";
-  version = "6.7.0.dev2403171504";
+  version = "6.7.0";
   format = "pyproject";
 
   disabled = pythonOlder "3.6";
@@ -31,7 +31,7 @@ buildPythonPackage rec {
   src = fetchzip {
     pname = "PyQt6";
     inherit version;
-    url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6/PyQt6-${version}.tar.gz";
+    url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6/PyQt6-6.7.0.dev2403171504.tar.gz";
     hash = "sha256-QYVhiDUhhJekKZ0iih91u4ZO6ZuDfaxzYbNwy8HA8Qs=";
   };
 

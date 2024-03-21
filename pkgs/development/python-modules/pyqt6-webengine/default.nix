@@ -13,14 +13,14 @@
 
 buildPythonPackage rec {
   pname = "pyqt6-webengine";
-  version = "6.7.0.dev2403171553";
+  version = "6.7.0";
   format = "pyproject";
 
   disabled = pythonOlder "3.6";
 
   src = fetchzip {
     pname = "PyQt6_WebEngine";
-    url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6-WebEngine/PyQt6_WebEngine-${version}.tar.gz";
+    url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6-WebEngine/PyQt6_WebEngine-6.7.0.dev2403171553.tar.gz";
     hash = "sha256-qydNkzEmJbsF1acMEsknmdi63DZz0x0p+4x8OnErRs0=";
   };
 
