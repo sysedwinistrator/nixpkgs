@@ -42,6 +42,7 @@ buildPythonPackage rec {
     # ./pyqt5-fix-dbus-mainloop-support.patch
     # confirm license when installing via pyqt6_sip
     ./pyqt5-confirm-license.patch
+    ./pyqt6-mock-semver.patch
   ];
 
   # be more verbose

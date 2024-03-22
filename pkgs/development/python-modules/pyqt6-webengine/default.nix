@@ -11,7 +11,7 @@
 , python
 }:
 
-buildPythonPackage rec {
+buildPythonPackage {
   pname = "pyqt6-webengine";
   version = "6.7.0";
   format = "pyproject";
@@ -23,6 +23,8 @@ buildPythonPackage rec {
     url = "https://www.riverbankcomputing.com/pypi/packages/PyQt6-WebEngine/PyQt6_WebEngine-6.7.0.dev2403171553.tar.gz";
     hash = "sha256-qydNkzEmJbsF1acMEsknmdi63DZz0x0p+4x8OnErRs0=";
   };
+
+  patches = [./0001-mock-semver.patch];
 
   # fix include path and increase verbosity
   postPatch = ''

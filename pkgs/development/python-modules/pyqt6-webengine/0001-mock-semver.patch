@@ -1,0 +1,38 @@
+From 38cb5194b6e0b9b398e25168e9346105f96847c8 Mon Sep 17 00:00:00 2001
+From: Edwin Mackenzie-Owen <edwin.mowen@gmail.com>
+Date: Fri, 22 Mar 2024 09:26:16 +0100
+Subject: [PATCH] mock semver
+
+---
+ PKG-INFO       | 2 +-
+ pyproject.toml | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/PKG-INFO b/PKG-INFO
+index 8ddfffd..4cf0daa 100644
+--- a/PKG-INFO
++++ b/PKG-INFO
+@@ -1,6 +1,6 @@
+ Metadata-Version: 2.1
+ Name: PyQt6-WebEngine
+-Version: 6.7.0.dev2403171553
++Version: 6.7.0
+ Requires-Python: >=3.8
+ Summary: Python bindings for the Qt WebEngine framework
+ Description-Content-Type: text/markdown
+diff --git a/pyproject.toml b/pyproject.toml
+index 9b11867..f80e490 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -5,7 +5,7 @@ build-backend = "sipbuild.api"
+ 
+ [project]
+ name = "PyQt6-WebEngine"
+-version = "6.7.0.dev2403171553"
++version = "6.7.0"
+ description = "Python bindings for the Qt WebEngine framework"
+ readme = "README.md"
+ urls.homepage = "https://www.riverbankcomputing.com/software/pyqtwebengine/"
+-- 
+2.43.2
+

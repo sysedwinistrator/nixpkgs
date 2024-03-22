@@ -1,0 +1,38 @@
+From 2a9f7eb66121512413a8ddf897299ec12d35c913 Mon Sep 17 00:00:00 2001
+From: Edwin Mackenzie-Owen <edwin.mowen@gmail.com>
+Date: Fri, 22 Mar 2024 09:22:21 +0100
+Subject: [PATCH] mock semver
+
+---
+ PKG-INFO       | 2 +-
+ pyproject.toml | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/PKG-INFO b/PKG-INFO
+index 45651c8..a655c8d 100644
+--- a/PKG-INFO
++++ b/PKG-INFO
+@@ -1,6 +1,6 @@
+ Metadata-Version: 2.1
+ Name: PyQt6
+-Version: 6.7.0.dev2403171504
++Version: 6.7.0
+ Requires-Python: >=3.8
+ Summary: Python bindings for the Qt cross platform application toolkit
+ Description-Content-Type: text/markdown
+diff --git a/pyproject.toml b/pyproject.toml
+index 7d2145c..e71f1a2 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -5,7 +5,7 @@ build-backend = "sipbuild.api"
+ 
+ [project]
+ name = "PyQt6"
+-version = "6.7.0.dev2403171504"
++version = "6.7.0"
+ description = "Python bindings for the Qt cross platform application toolkit"
+ readme = "README.md"
+ urls.homepage = "https://www.riverbankcomputing.com/software/pyqt/"
+-- 
+2.43.2
+
