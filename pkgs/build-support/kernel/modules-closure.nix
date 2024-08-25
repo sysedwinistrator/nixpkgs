@@ -7,6 +7,7 @@
   stdenvNoCC,
   kernel,
   firmware,
+  extraFirmwareFiles ? [],
   nukeReferences,
   rootModules,
   kmod,
@@ -23,6 +24,7 @@ stdenvNoCC.mkDerivation {
   inherit
     kernel
     firmware
+    extraFirmwareFiles
     rootModules
     allowMissing
     ;
