@@ -18,6 +18,7 @@ let
     rootModules = config.boot.initrd.availableKernelModules ++ config.boot.initrd.kernelModules;
     kernel = config.system.modulesTree;
     firmware = config.hardware.firmware;
+    extraFirmwareFiles = config.boot.initrd.extraFirmwareFiles;
     allowMissing = false;
   };
 
@@ -479,6 +480,21 @@ in
       description = ''
         Extra files to link and copy in to the initrd.
       '';
+    };
+
+    boot.initrd.extraFirmwareFiles = mkOption {
+      default = [ ];
+      type = types.listOf types.str;
+      description = ''
+        Extra firmware files from {var}`hardware.firmware` to add.
+
+        For each kernel module that is being added to the initrd, firmware files declared
+        as required by the module will be added automatically. However, some modules might
+        not declare their required firmware files.
+
+        The ".xz" or ".zst" suffixes can be omitted.
+      '';
+      example = [ "mediatek/mt8183/scp.img" ];
     };
 
     boot.initrd.prepend = mkOption {
