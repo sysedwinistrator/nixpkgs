@@ -38,6 +38,7 @@
 , buildServer ? true
 , SDL2
 , useSDL2 ? false
+, enableGLES2 ? false
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -56,6 +57,7 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeBool "BUILD_SERVER" buildServer)
     (lib.cmakeBool "ENABLE_PROMETHEUS" buildServer)
     (lib.cmakeBool "USE_SDL2" useSDL2)
+    (lib.cmakeBool "ENABLE_GLES2" enableGLES2)
     # Ensure we use system libraries
     (lib.cmakeBool "ENABLE_SYSTEM_GMP" true)
     (lib.cmakeBool "ENABLE_SYSTEM_JSONCPP" true)
@@ -125,6 +127,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   postInstall = lib.optionalString stdenv.isLinux ''
     patchShebangs $out
+  '' + lib.optionalString buildClient ''
+    rm $out/share/minetest/client/shaders/Irrlicht
+    cp -r $src/irr/media/Shaders/ $out/share/minetest/client/shaders/Irrlicht
   '' + lib.optionalString stdenv.isDarwin ''
     mkdir -p $out/Applications
     mv $out/minetest.app $out/Applications
