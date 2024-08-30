@@ -36,6 +36,7 @@
   buildServer ? true,
   SDL2,
   useSDL2 ? false,
+  enableGLES2 ? false
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -70,6 +71,7 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeBool "BUILD_UNITTESTS" (finalAttrs.doCheck or false))
     (lib.cmakeBool "ENABLE_PROMETHEUS" buildServer)
     (lib.cmakeBool "USE_SDL2" useSDL2)
+    (lib.cmakeBool "ENABLE_GLES2" enableGLES2)
     # Ensure we use system libraries
     (lib.cmakeBool "ENABLE_SYSTEM_GMP" true)
     (lib.cmakeBool "ENABLE_SYSTEM_JSONCPP" true)
