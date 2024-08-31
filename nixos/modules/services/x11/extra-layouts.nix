@@ -10,6 +10,19 @@ with lib;
 let
   layouts = config.services.xserver.xkb.extraLayouts;
 
+  variantOpts = {
+    options = {
+      name = mkOption {
+        type = types.str;
+        description = "Name of the variant. It must match the name of the xkb_symbols section.";
+      };
+      description = mkOption {
+        type = types.str;
+        description = "A short description of the variant.";
+      };
+    };
+  };
+
   layoutOpts = {
     options = {
       description = mkOption {
@@ -23,6 +36,12 @@ let
           A list of languages provided by the layout.
           (Use ISO 639-2 codes, for example: "eng" for english)
         '';
+      };
+
+      variants = mkOption {
+        type = types.listOf (types.submodule variantOpts);
+        default = [];
+        description = "Variants provided in the symbols file.";
       };
 
       compatFile = mkOption {
