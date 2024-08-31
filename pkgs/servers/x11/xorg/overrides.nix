@@ -722,7 +722,16 @@ self: super:
               ${lib.concatMapStrings (lang: "<iso639Id>${lang}</iso639Id>\n") layout.languages}
             </languageList>
           </configItem>
-          <variantList/>
+          <variantList>
+            ${lib.concatMapStrings (variant: ''
+              <variant>
+                <configItem>
+                  <name>${variant.name}</name>
+                  <description>${variant.description}</description>
+                </configItem>
+              </variant>
+            '') layout.variants}
+          </variantList>
         </layout>
         .
         w
