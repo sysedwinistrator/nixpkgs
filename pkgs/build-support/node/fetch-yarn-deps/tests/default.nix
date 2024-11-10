@@ -25,4 +25,14 @@
     yarnLock = ./giturl.lock;
     sha256 = "sha256-VPnyqN6lePQZGXwR7VhbFnP7/0/LB621RZwT1F+KzVQ=";
   };
+  berry_3 = testers.invalidateFetcherByDrvHash fetchYarnDeps {
+    src = ./berry_3;
+    yarnVersion = 3;
+    sha256 = "sha256-eiVOpRHuAS7zb6JpCzS3TIHbqQU+wCrMItzZGrE6Fbo=";
+  };
+  berry_4 = testers.invalidateFetcherByDrvHash fetchYarnDeps {
+    src = ./berry_4;
+    yarnVersion = 4;
+    sha256 = "sha256-Eq37qKn5P7rkufJBhME0OG/3BsWlCsFYVnWHP5uVhAQ=";
+  };
 }

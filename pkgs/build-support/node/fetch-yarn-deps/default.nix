@@ -14,6 +14,8 @@
   prefetch-yarn-deps,
   fixup-yarn-lock,
   yarn,
+  yarn-berry3,
+  yarn-berry4,
   makeSetupHook,
   cacert,
   callPackage,
@@ -104,6 +106,7 @@ in
           src ? null,
           hash ? "",
           sha256 ? "",
+          yarnVersion ? 1,
           ...
         }@args:
         let
@@ -132,21 +135,65 @@ in
             dontInstall = true;
 
             nativeBuildInputs = [
-              prefetch-yarn-deps
+              (
+                {
+                  "1" = prefetch-yarn-deps;
+                  "3" = yarn-berry3;
+                  "4" = yarn-berry4;
+                }
+                .${builtins.toString yarnVersion}
+              )
               cacert
             ];
             GIT_SSL_CAINFO = "${cacert}/etc/ssl/certs/ca-bundle.crt";
             NODE_EXTRA_CA_CERTS = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
-            buildPhase = ''
-              runHook preBuild
+            supportedArchitectures = builtins.toJSON {
+              os = [
+                "darwin"
+                "linux"
+              ];
+              cpu = [
+                "arm"
+                "arm64"
+                "ia32"
+                "x64"
+              ];
+              libc = [
+                "glibc"
+                "musl"
+              ];
+            };
 
-              yarnLock=''${yarnLock:=$PWD/yarn.lock}
-              mkdir -p $out
-              (cd $out; prefetch-yarn-deps --verbose --builder $yarnLock)
+            configurePhase = lib.optionalString (yarnVersion > 1) ''
+              runHook preConfigure
 
-              runHook postBuild
+              export HOME="$NIX_BUILD_TOP"
+              export YARN_ENABLE_TELEMETRY=0
+
+              yarn config set enableGlobalCache false
+              yarn config set cacheFolder $out
+              yarn config set supportedArchitectures --json "$supportedArchitectures"
+
+              runHook postConfigure
             '';
+
+            buildPhase =
+              ''
+                runHook preBuild
+
+                mkdir -p $out
+              ''
+              + lib.optionalString (yarnVersion > 1) ''
+                yarn install --immutable --mode skip-build
+              ''
+              + lib.optionalString (yarnVersion == 1) ''
+                yarnLock=''${yarnLock:=$PWD/yarn.lock}
+                (cd $out; prefetch-yarn-deps --verbose --builder $yarnLock)
+              ''
+              + ''
+                runHook postBuild
+              '';
 
             outputHashMode = "recursive";
           }
@@ -173,6 +220,28 @@ in
       description = "Install nodejs dependencies from an offline yarn cache produced by fetchYarnDeps";
     };
   } ./yarn-config-hook.sh;
+
+  yarnBerry3ConfigHook = makeSetupHook {
+    name = "yarn-config-hook";
+    propagatedBuildInputs = [ yarn-berry3 ];
+    substitutions = {
+      yarn = lib.getExe yarn-berry3;
+    };
+    meta = {
+      description = "Install nodejs dependencies from an offline yarn berry cache (version 3)";
+    };
+  } ./yarn-berry-config-hook.sh;
+
+  yarnBerry4ConfigHook = makeSetupHook {
+    name = "yarn-config-hook";
+    propagatedBuildInputs = [ yarn-berry4 ];
+    substitutions = {
+      yarn = lib.getExe yarn-berry4;
+    };
+    meta = {
+      description = "Install nodejs dependencies from an offline yarn berry cache (version 4)";
+    };
+  } ./yarn-berry-config-hook.sh;
 
   yarnBuildHook = makeSetupHook {
     name = "yarn-build-hook";
