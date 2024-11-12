@@ -58,6 +58,7 @@ stdenv.mkDerivation (finalAttrs: {
       ryota-ka
       pyrox0
       DimitarNestorov
+      gador
     ];
     platforms = platforms.unix;
     mainProgram = "yarn";
